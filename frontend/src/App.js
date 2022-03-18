@@ -9,6 +9,7 @@ function App() {
   // ------------------ This section will help us check if the user is connected or not in order to redirect him to the homepage ------------------
   const [isConnected, setIsConnected] = useState(false); // we'll use this to check if the user is connected or not
   const [currentAccount, setCurrentAccount] = useState(null); // We'll use this to get the connected account
+  const [currentBalance, setCurrentBalance] = useState(0); // We'll use this to get the account balance of the connected user
 
   const onLogin = async (provider) =>{
     // initalizing web3
@@ -20,6 +21,12 @@ function App() {
       console.log("Please make sure you're connected to Metamask!");
     } else if (accounts[0] !== currentAccount){
       setCurrentAccount(accounts[0]);
+      // Getting the current balance
+      const accBalance = web3.utils.fromWei(
+        await web3.eth.getBalance(accounts[0]),
+        "ether"
+      );
+      setCurrentBalance(Number(accBalance).toFixed(6));
       setIsConnected(true);
     }
   }
@@ -40,7 +47,7 @@ function App() {
           {/* If the user is not connected this will show the metamask button */}
           {!isConnected && <MetamaskLogin onLogin={onLogin} onLogout={onLogout} /> } 
           {/* If the user is connected this will show the homepage */}
-          {isConnected && <Home currentAccount={currentAccount} /> }
+          {isConnected && <Home currentAccount={currentAccount} currentBalance={currentBalance} /> }
         </main>
       </header>
     </div>
