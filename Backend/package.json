@@ -9,9 +9,7 @@
   "author": "Ayed Oukhay",
   "license": "ISC",
   "dependencies": {
-    "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.19.2",
-    "axios": "^0.26.1",
     "body-parser": "^1.19.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
