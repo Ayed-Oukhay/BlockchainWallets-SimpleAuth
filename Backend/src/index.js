@@ -9,6 +9,7 @@
  const helmet = require("helmet");
  const dbConfig = require('../config/database.config.js');
  const mongoose = require('mongoose');
+ const bodyParser = require('body-parser');
 
  const UserRoute = require('./routes/userRoutes')
  
@@ -50,7 +51,11 @@
  app.use(helmet());
  app.use(cors());
  app.use(express.json());
- app.use('/user',UserRoute)
+ app.use('/user', UserRoute)
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({
+   extended: true
+ }));
 
 /**
  * Server Activation
