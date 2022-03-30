@@ -12,6 +12,11 @@ const Home = (props) => {
           <p> {props.walletKey} </p>
           <h2>Account balance:</h2>
           <p> {props.currentSolBalance} </p>
+          <br/>
+          <h2>TronLink Account address:</h2>
+          <p> {props.tronAddress} </p>
+          <h2>Account balance:</h2>
+          <p> {props.currentTRXBalance} </p>
       </div>
     );
 

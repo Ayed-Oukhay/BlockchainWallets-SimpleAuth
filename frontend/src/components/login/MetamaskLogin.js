@@ -12,17 +12,19 @@ const Metamask = (props) => {
 
     const [isConnecting, setIsConnecting] = useState(false); //used to check if the user is connecting or not to display different messages
 
-  
     // ---------------- For compatibility reasons, we need to check the version of the provider (Metamask) because some browsers still use window.web3 instead of window.ethereum --------------------------
     const detectProvider = () =>{
       let provider;
+      // ----- Checking Polygon (Ethereum) provider -----
       if (window.ethereum) {
         provider = window.ethereum;
-      } else if (window.solana && window.solana.isPhantom){
+      } else if (window.solana && window.solana.isPhantom){ // ----- Checking Solana provider-----
         provider = window.solana;
-      } else if (window.web3){
+      } else if (window.tronWeb && window.tronWeb.ready) {
+        provider = window.tronWeb;
+      } else if (window.web3){ // ----- Checking Web3 general provider-----
         provider = window.web3.currentProvider;
-      } else {
+      } else { // ----- If no provider is found -----
         window.alert("No Ethereum browser detected! check out Metamask!");
       }
       return provider;
@@ -69,16 +71,36 @@ const Metamask = (props) => {
       const provider = detectProvider();
       if (provider){
         setIsConnecting(true);
-        
-        // const solkey = await window.solana.connect();
-        // const account = solkey.publicKey.toString();
-        // console.log(account);
-        // console.log(window.solana.isConnected);
-
+        // ----------- Adding the user to database -----------
+        const account = await window.solana.connect();
+        const AccountAdd = account.publicKey.toString();
+        const userObject = {
+          publicAddress: AccountAdd
+        };
+        axios.post('http://localhost:7000/user', userObject).then((res) => {
+          console.log(res.data)
+        }).catch((error) => {
+          console.log(error)
+        });
+        // ----------------------------------------------------
         props.connectPhantomWallet(provider);
       }
     };
     // **********************************************************************************************************
+
+    // ********************************* TronLink Authentication Logic *********************************
+    const TronConnect = async() => {
+      //const tronWeb = new TronWeb(fullNode, solidityNode);
+      const provider = detectProvider();
+      if (provider){
+        setIsConnecting(true);
+        // ----------- Adding the user to database -----------
+        
+        // ---------------------------------------------------
+        props.connectTronWallet(provider);
+      }
+    };
+    // *************************************************************************************************
 
     return (
       <div className="MetaAuth">
@@ -102,7 +124,7 @@ const Metamask = (props) => {
           <br/>
 
         {/* ------------ TronLink Login Button --------------- */}
-          <button className="btn btn-success btn-block">
+          <button className="btn btn-success btn-block" onClick={TronConnect}>
           <img src={logo3} alt="TronLinkImg" className="TronLink-logo" type="button" style={{height:30,width:30}}/> 
           {/* <span>{AuthBtnClick ? 'Login with Metamask':'Please make sure that Metamask is installed first!'}</span> */}
           {!isConnecting && "Connect"}
