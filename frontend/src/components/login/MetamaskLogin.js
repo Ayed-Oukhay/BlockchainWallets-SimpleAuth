@@ -7,10 +7,18 @@ import { useState } from 'react';
 import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import Web3 from 'web3';
+//import TronWeb from 'tronweb';
+import * as fcl from "@onflow/fcl";
 
 const Metamask = (props) => {
 
     const [isConnecting, setIsConnecting] = useState(false); //used to check if the user is connecting or not to display different messages
+
+    // ------------------ Flow (Blocto) Wallet configuration ------------------
+    fcl.config()
+      .put("accessNode.api", "https://access-testnet.onflow.org") // connect to Flow testnet
+      .put("discovery.wallet", "https://fcl-discovery.onflow.org/testnet/authn") // use Blocto testnet wallet 
+    // ------------------------------------------------------------------------
 
     // ---------------- For compatibility reasons, we need to check the version of the provider (Metamask) because some browsers still use window.web3 instead of window.ethereum --------------------------
     const detectProvider = () =>{
@@ -20,12 +28,12 @@ const Metamask = (props) => {
         provider = window.ethereum;
       } else if (window.solana && window.solana.isPhantom){ // ----- Checking Solana provider-----
         provider = window.solana;
-      } else if (window.tronWeb && window.tronWeb.ready) {
+      } else if (window.tronWeb) {
         provider = window.tronWeb;
       } else if (window.web3){ // ----- Checking Web3 general provider-----
         provider = window.web3.currentProvider;
       } else { // ----- If no provider is found -----
-        window.alert("No Ethereum browser detected! check out Metamask!");
+        window.alert("No wallet browser-extension detected! check out your browser extensions!");
       }
       return provider;
     }
@@ -90,15 +98,30 @@ const Metamask = (props) => {
 
     // ********************************* TronLink Authentication Logic *********************************
     const TronConnect = async() => {
-      //const tronWeb = new TronWeb(fullNode, solidityNode);
       const provider = detectProvider();
+
       if (provider){
         setIsConnecting(true);
+        // window.tronWeb.request({
+        //   method: 'tron_requestAccounts'
+        // });
         // ----------- Adding the user to database -----------
         
         // ---------------------------------------------------
         props.connectTronWallet(provider);
       }
+    };
+    // *************************************************************************************************
+
+    // ********************************* Blocto Authentication Logic *********************************
+    const BloctoConnect = async() => {
+      fcl.authenticate(); // authenticating the user through Blocto
+      setIsConnecting(true); 
+      // fcl.unauthenticate();
+      // ----------- Adding the user to database -----------
+        
+      // ---------------------------------------------------
+      props.connectBloctoWallet();
     };
     // *************************************************************************************************
 
@@ -133,7 +156,7 @@ const Metamask = (props) => {
           <br/>
 
         {/* ------------ Blocto Login Button --------------- */}
-          <button className="btn btn-danger btn-block">
+          <button className="btn btn-danger btn-block" onClick={BloctoConnect}>
           <img src={logo4} alt="BloctoImg" className="Blocto-logo" type="button" style={{height:30,width:30}}/> 
           {/* <span>{AuthBtnClick ? 'Login with Metamask':'Please make sure that Metamask is installed first!'}</span> */}
           {!isConnecting && "Connect"}
