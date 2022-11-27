@@ -1,5 +1,5 @@
 import './App.css';
-import MetamaskLogin from './components/login/MetamaskLogin';
+import MetamaskLogin from './components/login/WalletLogin';
 import Home from './components/home/Home';
 import Navigationbar from './components/navbar/Navbar';
 import { useState, useEffect } from 'react';

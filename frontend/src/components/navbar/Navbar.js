@@ -16,7 +16,8 @@ const Navigationbar = (props) => {
             <Nav.Link href="#features">About Us</Nav.Link>
             <Nav.Link href="#pricing">Create</Nav.Link>
             <Nav.Link href="#profile">Profile</Nav.Link>
-            <Button variant="primary">Connect Wallet</Button>
+            {props.isConnected ? <Button variant="primary" href="../login/MetamaskLogin">Logout</Button> : <Button variant="primary" href="../login/MetamaskLogin">Connect Wallet</Button>}
+            
           </Nav>
           </center>
         </Container>

@@ -117,7 +117,7 @@ const Metamask = (props) => {
     const BloctoConnect = async() => {
       fcl.authenticate(); // authenticating the user through Blocto
       setIsConnecting(true); 
-      // fcl.unauthenticate();
+      //fcl.unauthenticate();
       // ----------- Adding the user to database -----------
         
       // ---------------------------------------------------
